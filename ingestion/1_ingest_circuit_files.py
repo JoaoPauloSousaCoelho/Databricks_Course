@@ -5,11 +5,7 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC Step-1: Read the csv file using the sparker dataframe reader
-
-# COMMAND ----------
-
-display(dbutils.fs.mounts())
+# MAGIC ##### Step-1: Read the csv file using the sparker dataframe reader
 
 # COMMAND ----------
 
@@ -101,3 +97,27 @@ display(circuits_final_df)
 # COMMAND ----------
 
 circuits_final_df.write.mode("overwrite").parquet("/mnt/lpbcdatalake/processed/circuits")
+
+# COMMAND ----------
+
+df = circuits_final_df.collect()
+
+# COMMAND ----------
+
+# MAGIC %r
+# MAGIC circuits_final_df
+
+# COMMAND ----------
+
+# MAGIC %r
+# MAGIC require(SparkR)
+# MAGIC 
+# MAGIC df <- read.df( '/mnt/lpbcdatalake/raw/circuits.csv', "csv", header = "true", inferSchema = "true", na.strings = "NA")
+
+# COMMAND ----------
+
+
+
+# COMMAND ----------
+
+
