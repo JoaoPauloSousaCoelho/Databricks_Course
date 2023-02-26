@@ -44,8 +44,3 @@ dbutils.fs.mounts()
 # COMMAND ----------
 
 dbutils.fs.ls('/mnt/lpbcdatalake/raw/')
-
-# COMMAND ----------
-
-# MAGIC %r
-# MAGIC df = read.csv('mnt/lpbcdatalake/raw/circuits.csv')
