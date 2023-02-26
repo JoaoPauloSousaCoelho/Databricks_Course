@@ -4,6 +4,23 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
+dbutils.widgets.help()
+
+# COMMAND ----------
+
+dbutils.widgets.text("p_data_source", "")
+v_data_source = dbutils.widgets.get("p_data_source")
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC ##### Step-1: Read the csv file using the sparker dataframe reader
 
@@ -35,15 +52,7 @@ circuit_schema = StructType(fields = [
 circuits_df = spark.read\
                 .option('header', True)\
                 .schema(circuit_schema)\
-                .csv('/mnt/lpbcdatalake/raw/circuits.csv')                    
-
-# COMMAND ----------
-
-display(circuits_df)
-
-# COMMAND ----------
-
-circuits_df.printSchema()
+                .csv(f"{raw_folder_path}/circuits.csv")                    
 
 # COMMAND ----------
 
@@ -56,7 +65,7 @@ from pyspark.sql.functions import col
 
 # COMMAND ----------
 
-circuit_selected_df= circuits_df(col("circuitid"), col("circuitRef"), col("name"),
+circuit_selected_df= circuits_df.select(col("circuitid"), col("circuitRef"), col("name"),
                                         col("location"), col("country"),col("lat"), col("lng"),col("alt"))
 
 # COMMAND ----------
@@ -66,11 +75,16 @@ circuit_selected_df= circuits_df(col("circuitid"), col("circuitRef"), col("name"
 
 # COMMAND ----------
 
+from pyspark.sql.functions import lit
+
+# COMMAND ----------
+
 circuit_renamed_df = circuit_selected_df.withColumnRenamed("circuitid", "circuit_id")\
 .withColumnRenamed("circuitRef", "circuit_ref")\
 .withColumnRenamed("lat", "latitude")\
 .withColumnRenamed("lng", "longitude")\
-.withColumnRenamed("alt", "altitude")
+.withColumnRenamed("alt", "altitude")\
+.withColumn("data_source", lit(v_data_source))
 
 # COMMAND ----------
 
@@ -83,11 +97,7 @@ from pyspark.sql.functions import current_timestamp, lit
 
 # COMMAND ----------
 
-circuits_final_df = circuit_renamed_df.withColumn("ingestion_date", current_timestamp())
-
-# COMMAND ----------
-
-display(circuits_final_df)
+circuits_final_df = add_timestamp_date(circuit_renamed_df)
 
 # COMMAND ----------
 
@@ -96,23 +106,19 @@ display(circuits_final_df)
 
 # COMMAND ----------
 
-circuits_final_df.write.mode("overwrite").parquet("/mnt/lpbcdatalake/processed/circuits")
+circuits_final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/circuits")
 
 # COMMAND ----------
 
-df = circuits_final_df.collect()
+dbutils.notebook.exit("Success")
 
 # COMMAND ----------
 
-# MAGIC %r
-# MAGIC circuits_final_df
+#%r
+#require(SparkR)
 
-# COMMAND ----------
+#df <- read.df( '/mnt/lpbcdatalake/raw/circuits.csv', "csv", header = "true", inferSchema = "true", na.strings = "NA")
 
-# MAGIC %r
-# MAGIC require(SparkR)
-# MAGIC 
-# MAGIC df <- read.df( '/mnt/lpbcdatalake/raw/circuits.csv', "csv", header = "true", inferSchema = "true", na.strings = "NA")
 
 # COMMAND ----------
 
