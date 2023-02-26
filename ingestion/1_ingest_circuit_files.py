@@ -117,7 +117,3 @@ df = circuits_final_df.collect()
 # COMMAND ----------
 
 
-
-# COMMAND ----------
-
-
