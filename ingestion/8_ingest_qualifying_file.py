@@ -9,6 +9,14 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType
 
 # COMMAND ----------
@@ -29,7 +37,7 @@ qualifying_schema = StructType(fields = [
 qualifying_df = spark.read\
 .schema(qualifying_schema)\
 .option("multiLine", True)\
-.json("/mnt/lpbcdatalake/raw/qualifying")
+.json(f"{raw_folder_path}/qualifying")
 
 # COMMAND ----------
 
@@ -38,7 +46,7 @@ qualifying_df = spark.read\
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp, col
+from pyspark.sql.functions import current_timestamp, col, lit
 
 # COMMAND ----------
 
@@ -47,6 +55,7 @@ final_df = qualifying_df\
 .withColumnRenamed('raceId', 'race_id')\
 .withColumnRenamed('driverId', 'driver_id')\
 .withColumn('ingestion_date', current_timestamp())
+.withColumn('data_source', lit(v_data_source))
 
 # COMMAND ----------
 
@@ -55,4 +64,8 @@ final_df = qualifying_df\
 
 # COMMAND ----------
 
-final_df.write.mode('overwrite').parquet("/mnt/lpbcdatalake/processed/qualifying")
+final_df.write.mode('overwrite').parquet(f"{processed_folder_path}/qualifying")
+
+# COMMAND ----------
+
+dbutils.notebook.exit("Success")

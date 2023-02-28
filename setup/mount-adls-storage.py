@@ -7,8 +7,7 @@ dbutils.secrets.list('formula1-scope')
 
 # COMMAND ----------
 
-# Databricks notebook source
-storage_account_name = "lpbcdatalake"
+storage_account_name = 'dp203datalakelpbc'
 client_id            = dbutils.secrets.get('formula1-scope','databricks-app-client-id')
 tenant_id            = dbutils.secrets.get('formula1-scope','databricks-app-tentant-id')
 client_secret        = dbutils.secrets.get('formula1-scope', 'databricks-app-client-secret')

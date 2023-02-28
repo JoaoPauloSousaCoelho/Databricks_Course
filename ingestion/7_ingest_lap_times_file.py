@@ -9,6 +9,19 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
+dbutils.widgets("p_data_source", "")
+v_data_source = dbutils.widgets.get("p_data_source")
+
+# COMMAND ----------
+
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType, FloatType
 
 # COMMAND ----------
@@ -26,7 +39,7 @@ lap_times_schema = StructType(fields = [
 
 lap_times_df = spark.read\
 .schema(lap_times_schema)\
-.csv("/mnt/lpbcdatalake/raw/lap_times/lap_times_split*.csv")
+.csv(f"{raw_folder_path}/lap_times_split*.csv")
 
 # COMMAND ----------
 
@@ -35,7 +48,7 @@ lap_times_df = spark.read\
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp, col
+from pyspark.sql.functions import current_timestamp, col, lit
 
 # COMMAND ----------
 
@@ -43,6 +56,7 @@ final_df = lap_times_df\
 .withColumnRenamed('raceId', 'race_id')\
 .withColumnRenamed('driverId', 'driver_id')\
 .withColumn('ingestion_date', current_timestamp())
+.withColumn('data_source', lit(v_data_source))
 
 # COMMAND ----------
 
@@ -51,8 +65,8 @@ final_df = lap_times_df\
 
 # COMMAND ----------
 
-
+final_df.write.mode('overwrite').parquet(f"{processed_folder_path}/lap_times")
 
 # COMMAND ----------
 
-final_df.write.mode('overwrite').parquet("/mnt/lpbcdatalake/processed/lap_times")
+dbutils.notebook.exit("Success")

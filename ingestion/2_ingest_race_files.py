@@ -9,12 +9,20 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 display(dbutils.fs.mounts())
 
 # COMMAND ----------
 
-# MAGIC %fs
-# MAGIC ls /mnt/lpbcdatalake/raw
+dbutils.widgets.text("p_data_source", "")
+v_data_source = dbutils.widgets.get("p_data_source")
 
 # COMMAND ----------
 
@@ -38,7 +46,7 @@ race_schema = StructType(fields = [
 races_df = spark.read\
                 .option('header', True)\
                 .schema(race_schema)\
-                .csv('/mnt/lpbcdatalake/raw/races.csv')                    
+                .csv(f'{raw_folder_path}/races.csv')                    
 
 # COMMAND ----------
 
@@ -52,7 +60,8 @@ from pyspark.sql.functions import current_timestamp, to_timestamp, concat, col, 
 # COMMAND ----------
 
 races_with_timestamp_df = races_df.withColumn('ingestion_time', current_timestamp())\
-.withColumn('race_timestamp', to_timestamp(concat(col('date'),lit(' '), col('time')),'yyyy-MM-dd HH:mm:ss'))
+.withColumn('race_timestamp', to_timestamp(concat(col('date'),lit(' '), col('time')),'yyyy-MM-dd HH:mm:ss'))\
+.withColumn('data_source', lit(v_data_source))
 
 # COMMAND ----------
 
@@ -61,7 +70,7 @@ races_with_timestamp_df = races_df.withColumn('ingestion_time', current_timestam
 
 # COMMAND ----------
 
-races_selected_df= races_with_timestamp_df.select(col("raceId").alias('race_id'), col("year").alias('race_year'), col("round"),
+races_final_df= races_with_timestamp_df.select(col("raceId").alias('race_id'), col("year").alias('race_year'), col("round"),
                                         col("circuitId").alias('circuit_id'), col("name"),col('ingestion_time'),                                                             col('race_timestamp'))
 
 # COMMAND ----------
@@ -71,4 +80,8 @@ races_selected_df= races_with_timestamp_df.select(col("raceId").alias('race_id')
 
 # COMMAND ----------
 
-races_final_df.write.mode("overwrite").partitionBy('race_year').parquet("/mnt/lpbcdatalake/processed/races")
+races_final_df.write.mode("overwrite").partitionBy('race_year').parquet(f"{processed_folder_path}/races")
+
+# COMMAND ----------
+
+dbutils.notebook.exit("Success")

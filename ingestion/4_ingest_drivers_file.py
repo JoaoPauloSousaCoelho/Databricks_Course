@@ -9,6 +9,19 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
+dbutils.widgets.text("p_data_source", "")
+v_data_source = dbutils.widgets.get("p_data_source")
+
+# COMMAND ----------
+
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType, DateType
 
 # COMMAND ----------
@@ -35,7 +48,7 @@ driver_schema = StructType(fields = [
 
 drivers_df = spark.read\
 .schema(driver_schema)\
-.json("/mnt/lpbcdatalake/raw/drivers.json")
+.json(f"{raw_folder_path}/drivers.json")
 
 # COMMAND ----------
 
@@ -53,6 +66,7 @@ drivers_with_columns_df = drivers_df\
 .withColumnRenamed('driverRef','driver_ref')\
 .withColumn('ingestion_date', current_timestamp())\
 .withColumn('name', concat(col('name.forename'), lit(' '), col('name.surname')))
+.withColumn('data_source', lit(v_data_source))
 
 # COMMAND ----------
 
@@ -70,4 +84,8 @@ drivers_final_df = drivers_with_columns_df.drop(col('url'))
 
 # COMMAND ----------
 
-drivers_final_df.write.mode('overwrite').parquet("/mnt/lpbcdatalake/processed/drivers")
+drivers_final_df.write.mode('overwrite').parquet(f"{processed_folder_path}/drivers")
+
+# COMMAND ----------
+
+dbutils.notebook.exit("Success")

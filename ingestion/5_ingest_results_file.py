@@ -9,6 +9,19 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
+dbutils.widgets("p_data_source", "")
+v_data_source = dbutils.widgets.get("p_data_source")
+
+# COMMAND ----------
+
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType, FloatType
 
 # COMMAND ----------
@@ -38,7 +51,7 @@ results_schema = StructType(fields = [
 
 results_df = spark.read\
 .schema(results_schema)\
-.json("/mnt/lpbcdatalake/raw/results.json")
+.json(f"{raw_folder_path}/results.json")
 
 # COMMAND ----------
 
@@ -52,7 +65,7 @@ results_df = spark.read\
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp, col
+from pyspark.sql.functions import current_timestamp, col, lit
 
 # COMMAND ----------
 
@@ -67,6 +80,7 @@ results_with_columns_df = results_df\
 .withColumnRenamed('fastestLapTime','fastest_lap_time')\
 .withColumnRenamed('fastestLapSpeed','fastest_lap_speed')\
 .withColumn('ingestion_date', current_timestamp())
+.withColumn('data_source', lit(v_data_source))
 
 # COMMAND ----------
 
@@ -84,4 +98,8 @@ results_final_df = results_with_columns_df.drop(col('statusId'))
 
 # COMMAND ----------
 
-results_final_df.write.mode('overwrite').parquet("/mnt/lpbcdatalake/processed/results")
+results_final_df.write.mode('overwrite').parquet(f"{processed_folder_path}/results")
+
+# COMMAND ----------
+
+dbutils.notebook.exit("Success")

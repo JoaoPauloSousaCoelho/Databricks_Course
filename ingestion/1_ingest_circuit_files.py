@@ -27,7 +27,7 @@ v_data_source = dbutils.widgets.get("p_data_source")
 # COMMAND ----------
 
 # MAGIC %fs
-# MAGIC ls /mnt/lpbcdatalake/raw
+# MAGIC ls mnt/dp203datalakelpbc/raw
 
 # COMMAND ----------
 
