@@ -26,11 +26,6 @@ v_data_source = dbutils.widgets.get("p_data_source")
 
 # COMMAND ----------
 
-# MAGIC %fs
-# MAGIC ls mnt/dp203datalakelpbc/raw
-
-# COMMAND ----------
-
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType, DoubleType
 
 # COMMAND ----------

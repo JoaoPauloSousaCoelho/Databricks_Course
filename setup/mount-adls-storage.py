@@ -7,7 +7,7 @@ dbutils.secrets.list('formula1-scope')
 
 # COMMAND ----------
 
-storage_account_name = 'dp203datalakelpbc'
+storage_account_name = 'datalakelpbc'
 client_id            = dbutils.secrets.get('formula1-scope','databricks-app-client-id')
 tenant_id            = dbutils.secrets.get('formula1-scope','databricks-app-tentant-id')
 client_secret        = dbutils.secrets.get('formula1-scope', 'databricks-app-client-secret')
@@ -38,8 +38,4 @@ mount_adls("processed")
 
 # COMMAND ----------
 
-dbutils.fs.mounts()
-
-# COMMAND ----------
-
-dbutils.fs.ls('/mnt/lpbcdatalake/raw/')
+mount_adls("presentation")

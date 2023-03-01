@@ -17,7 +17,7 @@
 
 # COMMAND ----------
 
-dbutils.widgets("p_data_source", "")
+dbutils.widgets.text("p_data_source", "")
 v_data_source = dbutils.widgets.get("p_data_source")
 
 # COMMAND ----------
@@ -39,7 +39,7 @@ lap_times_schema = StructType(fields = [
 
 lap_times_df = spark.read\
 .schema(lap_times_schema)\
-.csv(f"{raw_folder_path}/lap_times_split*.csv")
+.csv(f"{raw_folder_path}/lap_times/lap_times_split*.csv")
 
 # COMMAND ----------
 
@@ -55,7 +55,7 @@ from pyspark.sql.functions import current_timestamp, col, lit
 final_df = lap_times_df\
 .withColumnRenamed('raceId', 'race_id')\
 .withColumnRenamed('driverId', 'driver_id')\
-.withColumn('ingestion_date', current_timestamp())
+.withColumn('ingestion_date', current_timestamp())\
 .withColumn('data_source', lit(v_data_source))
 
 # COMMAND ----------

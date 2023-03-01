@@ -17,7 +17,7 @@
 
 # COMMAND ----------
 
-dbutils.widgets("p_data_source", "")
+dbutils.widgets.text("p_data_source", "")
 v_data_source = dbutils.widgets.get("p_data_source")
 
 # COMMAND ----------
@@ -58,7 +58,7 @@ final_df = pit_stops_df\
 .withColumnRenamed('raceId', 'race_id')\
 .withColumnRenamed('driverId', 'driver_id')\
 .withColumn('ingestion_date', current_timestamp())\
-.withColumn('data_source', v_data_source)
+.withColumn('data_source', lit(v_data_source))
 
 # COMMAND ----------
 
@@ -71,4 +71,4 @@ final_df.write.mode('overwrite').parquet(f"{processed_folder_path}/pit_stops")
 
 # COMMAND ----------
 
-db.notebook.exit("Success")
+dbutils.notebook.exit("Success")

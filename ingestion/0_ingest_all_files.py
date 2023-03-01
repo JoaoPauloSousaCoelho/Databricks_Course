@@ -11,7 +11,7 @@ v_result = dbutils.notebook.run("2_ingest_race_files", 0,{"p_data_source": "Erga
 
 # COMMAND ----------
 
-v_result = dbutils.notebook.run("3_ingest_constructor_file", 0, {"p_data_source": "Ergast API"})
+v_result = dbutils.notebook.run("3_ingest_constructors_file", 0, {"p_data_source": "Ergast API"})
 
 # COMMAND ----------
 
