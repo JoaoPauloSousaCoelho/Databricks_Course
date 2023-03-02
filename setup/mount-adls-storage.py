@@ -3,14 +3,14 @@ dbutils.secrets.help()
 
 # COMMAND ----------
 
-dbutils.secrets.list('formula1-scope')
+dbutils.secrets.list('formula-1')
 
 # COMMAND ----------
 
 storage_account_name = 'datalakelpbc'
-client_id            = dbutils.secrets.get('formula1-scope','databricks-app-client-id')
-tenant_id            = dbutils.secrets.get('formula1-scope','databricks-app-tentant-id')
-client_secret        = dbutils.secrets.get('formula1-scope', 'databricks-app-client-secret')
+client_id            = dbutils.secrets.get('formula-1','databricks-app-client-id')
+tenant_id            = dbutils.secrets.get('formula-1','databricks-app-tentant-id')
+client_secret        = dbutils.secrets.get('formula-1', 'databricks-app-client-secret')
 
 # COMMAND ----------
 
@@ -39,3 +39,7 @@ mount_adls("processed")
 # COMMAND ----------
 
 mount_adls("presentation")
+
+# COMMAND ----------
+
+dbutils.fs.mounts()

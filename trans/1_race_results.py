@@ -26,6 +26,10 @@ races_df = spark.read.parquet(f"{processed_folder_path}/races")\
 
 # COMMAND ----------
 
+from pyspark.sql.functions import current_timestamp
+
+# COMMAND ----------
+
 circuits_df = spark.read.parquet(f"{processed_folder_path}/circuits")\
 .withColumnRenamed("location", "circuit_location")\
 .withColumn("created_date", current_timestamp())
@@ -63,7 +67,7 @@ from pyspark.sql.functions import current_timestamp
 
 final_df = race_results_df.select("race_year", "race_name", "race_date", "circuit_location",
                                  "driver_name", "driver_number", "driver_nationality",
-                                 "grid", "fastest_lap", "team", "race_time", "points")\
+                                 "grid", "fastest_lap", "team", "race_time", "points", "position")\
 .withColumn('crated_date', current_timestamp())
 
 # COMMAND ----------
