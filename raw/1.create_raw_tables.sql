@@ -132,3 +132,50 @@ OPTIONS (path "/mnt/datalakelpbc/raw/pit_stops.json", multiLine true);
 -- COMMAND ----------
 
 SELECT * FROM f1_raw.pit_stops;
+
+-- COMMAND ----------
+
+-- MAGIC %md 
+-- MAGIC #### Create Lap Times Table
+
+-- COMMAND ----------
+
+DROP TABLE IF EXISTS f1_raw.lap_times;
+CREATE TABLE IF NOT EXISTS f1_raw.lap_times(
+raceId INT,
+driverId INT,
+lap INT,
+positition INT,
+time STRING,
+milliseconds INT
+)
+USING csv
+OPTIONS (path "/mnt/datalakelpbc/raw/lap_times")
+
+-- COMMAND ----------
+
+SELECT * FROM f1_raw.lap_times
+
+-- COMMAND ----------
+
+DROP TABLE IF EXISTS f1_raw.qualifying;
+CREATE TABLE IF NOT EXISTS f1_raw.qualifying(
+constructorId INT,
+driverId INT,
+number INT,
+position INT,
+q1 STRING,
+q2 STRING,
+q3 STRING,
+qualifyId INT,
+raceId INT
+) USING json
+OPTIONS (path "/mnt/datalakelpbc/raw/qualifying", multiLine true)
+
+-- COMMAND ----------
+
+SELECT * FROM f1_raw.qualifying;
+
+-- COMMAND ----------
+
+DESC EXTENDED f1_raw.qualifying;

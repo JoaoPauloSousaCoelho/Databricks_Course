@@ -65,7 +65,11 @@ final_df = lap_times_df\
 
 # COMMAND ----------
 
-final_df.write.mode('overwrite').parquet(f"{processed_folder_path}/lap_times")
+final_df.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.lap_times')
+
+# COMMAND ----------
+
+#final_df.write.mode('overwrite').parquet(f"{processed_folder_path}/lap_times")
 
 # COMMAND ----------
 

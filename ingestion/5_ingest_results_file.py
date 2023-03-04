@@ -98,7 +98,11 @@ results_final_df = results_with_columns_df.drop(col('statusId'))
 
 # COMMAND ----------
 
-results_final_df.write.mode('overwrite').parquet(f"{processed_folder_path}/results")
+results_final_df.write.mode('overwrite').format("parquet").saveAsTable("f1_processed.results")
+
+# COMMAND ----------
+
+#results_final_df.write.mode('overwrite').parquet(f"{processed_folder_path}/results")
 
 # COMMAND ----------
 

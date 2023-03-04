@@ -41,7 +41,7 @@ SELECT CURRENT_DATABASE();
 -- COMMAND ----------
 
 -- MAGIC %python
--- MAGIC race_results_df.write.format("parquet").mode("overwrite").option("path", f"{presentation_folder_path}/race_results_ext_py").saveAsTable("demo.race_results_py")
+-- MAGIC race_results_df.write.format("parquet").mode("overwrite").saveAsTable("demo.race_results_py")
 
 -- COMMAND ----------
 
@@ -50,7 +50,7 @@ SHOW TABLES;
 
 -- COMMAND ----------
 
-DESC EXTENDED race_results_python;
+DESC EXTENDED race_results_py;
 
 -- COMMAND ----------
 
@@ -79,7 +79,7 @@ SHOW TABLES IN demo;
 -- COMMAND ----------
 
 -- MAGIC %python
--- MAGIC race_results_df.write.format("parquet").option("path", f"{presentation_folder_path}/race_results_ext_py").saveAsTable("demo.race_results_py")
+-- MAGIC race_results_df.write.mode("overwrite").format("parquet").option("path", f"{presentation_folder_path}/race_results_ext_py").saveAsTable("demo.race_results_py")
 
 -- COMMAND ----------
 
@@ -158,3 +158,7 @@ SELECT *
 -- COMMAND ----------
 
 SHOW TABLES;
+
+-- COMMAND ----------
+
+
